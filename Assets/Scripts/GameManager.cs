@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -17,8 +18,8 @@ public class GameManager : MonoBehaviour
     public Transform trBottomGrid;
     public int BottomGridSize = 7;
 
-    public TextAsset levelText; 
-    
+    public TextAsset levelText;
+
     [HideInInspector]
     public int gridX = -1;
     [HideInInspector]
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
 
 
     public bool ISPLAYING = true;
+    public bool LOST = false;
 
     private void Awake()
     {
@@ -63,7 +65,7 @@ public class GameManager : MonoBehaviour
                 goNode.transform.position = new Vector3(j * 1, -0.5f, i * -1);
                 goNode.transform.parent = trGrid;
                 Node node = goNode.GetComponent<Node>();
-                node.Initialize(j + 1, i + 1, columns[j].Substring(0, 1));
+                node.Initialize(j + 1, i + 1, Regex.Replace(columns[j], @"\t|\n|\r", ""));
                 goNode.name = (j + 1).ToString() + "x" + (i + 1).ToString();
 
                 nodes.Add(node);
@@ -92,8 +94,9 @@ public class GameManager : MonoBehaviour
     private void ReadyTheGrid()
     {
 
-        int TotalBallCount = balls.Count + portals.Sum(p => p.ballCount);//THIS SHOULD BE ALWAYS N * 12 and N>=1
-        for (int i = 0; i < TotalBallCount / 4; i++)
+        int totalBallCount = balls.Count + portals.Sum(p => p.ballCount);
+        if (totalBallCount % 12 > 0) Debug.LogError(string.Format("You can not have {0} balls. It should be N*12 and N>=1", totalBallCount));
+        for (int i = 0; i < totalBallCount / 4; i++)
         {
             LevelBallColors.Add("Red");
             LevelBallColors.Add("Green");
@@ -113,7 +116,7 @@ public class GameManager : MonoBehaviour
         {
             ball.Check();
         }
-        foreach(var portal in portals)
+        foreach (var portal in portals)
         {
             portal.Check();
         }
@@ -151,12 +154,24 @@ public class GameManager : MonoBehaviour
     public void addToBottomNode(Ball ball)
     {
         BottomNode node = bottomNodes.FirstOrDefault(n => n.ball == null);
-        if (node == null) { ISPLAYING = false; Debug.Log("LOST"); return; }
+        if (node == null)
+        {
+            ISPLAYING = false;
+            LOST = true;
+            C.uiManager.OpenEndGamePanel();
+            return;
+        }
         node.ball = ball;
 
         BottomNodesCalculations();
     }
-
+    private int GetRemainingBallCount()
+    {
+        int remainingPortalBalls = portals.Sum(p => p.ballCount);
+        int remainingBottomBalls = bottomNodes.Select(node => node.ball).Where(b => b != null).Count();
+        int remainingLevelBalls = balls.Count;
+        return remainingPortalBalls + remainingBottomBalls + remainingLevelBalls;
+    }
     private void BottomNodesCalculations()
     {
         var allBottomBalls = bottomNodes.Select(node => node.ball).Where(b => b != null).ToList();
@@ -190,10 +205,11 @@ public class GameManager : MonoBehaviour
         {
             b.CallGoToBottomRow();
         }
-    }
-
-    public void CheckBottomRow()
-    {
-        //throw new NotImplementedException();
+        if (GetRemainingBallCount() == 0)
+        {
+            LOST = false;
+            ISPLAYING = false;
+            C.uiManager.OpenEndGamePanel();
+        }
     }
 }

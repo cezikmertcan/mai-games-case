@@ -31,6 +31,12 @@ public class Portal : MonoBehaviour
                 C.gameManager.balls.Add(ball);
                 goBall.transform.position = new Vector3(this.node.GetBottomNeighbor().transform.position.x, 0, this.node.GetBottomNeighbor().transform.position.z);
                 ballCount--;
+                if (ballCount == 0)
+                {
+                    node.type = "E";
+                    C.gameManager.CheckGrid();
+                    Destroy(this.gameObject);
+                }
             }
     }
 }

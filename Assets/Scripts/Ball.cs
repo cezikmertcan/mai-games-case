@@ -62,7 +62,7 @@ public class Ball : MonoBehaviour
 
     public void onClick()
     {
-        if (!isClickable) return;
+        if (!isClickable || !C.gameManager.ISPLAYING) return;
         isClickable = false;
         C.gameManager.balls.Remove(this);
         var nodesToGo = node.BFS();
@@ -81,6 +81,7 @@ public class Ball : MonoBehaviour
             Vector3 direction = (targetPosition - transform.position).normalized / 10;
             while (Vector3.Distance(transform.position, targetPosition) > (direction.magnitude * 1.1))
             {
+                if (!C.gameManager.ISPLAYING) StopAllCoroutines();
                 transform.Translate(direction);
                 yield return new WaitForSeconds(1 / 60f);
             }
@@ -105,6 +106,5 @@ public class Ball : MonoBehaviour
             yield return new WaitForSeconds(1 / 60f);
         }
         transform.position = targetPosition;
-        C.gameManager.CheckBottomRow();
     }
 }
