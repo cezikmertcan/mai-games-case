@@ -700,7 +700,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 110
+  field of view: 80
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -726,13 +726,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.60876137, y: 0, z: 0, w: 0.7933534}
-  m_LocalPosition: {x: 0, y: 6, z: -3.75}
+  m_LocalRotation: {x: 0.46174863, y: 0, z: 0, w: 0.8870109}
+  m_LocalPosition: {x: 0, y: 9, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 75, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 55, y: 0, z: 0}
 --- !u!1 &1162268733
 GameObject:
   m_ObjectHideFlags: 0
@@ -1171,7 +1171,10 @@ MonoBehaviour:
   trGrid: {fileID: 182356833}
   trBottomGrid: {fileID: 1162268734}
   BottomGridSize: 7
-  levelText: {fileID: 4900000, guid: e07afba78044379419802ec09dfa0589, type: 3}
+  levelTexts:
+  - {fileID: 4900000, guid: e07afba78044379419802ec09dfa0589, type: 3}
+  - {fileID: 4900000, guid: fd2b132d6485025489fb71bb7dacd614, type: 3}
+  - {fileID: 4900000, guid: e6d4d82fddd558449a000b36d41c468d, type: 3}
   gridX: -1
   gridY: -1
   nodes: []

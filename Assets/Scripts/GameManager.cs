@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public Transform trBottomGrid;
     public int BottomGridSize = 7;
 
-    public TextAsset levelText;
+    public TextAsset[] levelTexts;
 
     [HideInInspector]
     public int gridX = -1;
@@ -52,7 +52,17 @@ public class GameManager : MonoBehaviour
     }
     private void CreateGrid()
     {
-        var rows = levelText.text.Split('\n').ToList();
+        string levelText;
+        if (C.Level <= levelTexts.Length)
+        {
+            levelText = levelTexts[C.Level - 1].text;
+        }
+        else
+        {
+            int randomIndex = UnityEngine.Random.Range(0, levelTexts.Length);
+            levelText = levelTexts[randomIndex].text;
+        }
+        var rows = levelText.Split('\n').ToList();
         gridY = rows.Count;
 
         for (int i = 0; i < gridY; i++)
@@ -112,14 +122,15 @@ public class GameManager : MonoBehaviour
 
     public void CheckGrid()
     {
-        foreach (var ball in balls)
-        {
-            ball.Check();
-        }
         foreach (var portal in portals)
         {
             portal.Check();
         }
+        foreach (var ball in balls)
+        {
+            ball.Check();
+        }
+
     }
 
     public string GetRandomBallColor()
@@ -184,9 +195,8 @@ public class GameManager : MonoBehaviour
             {
                 foreach (var item in ballGroup)
                 {
-                    item.bottomNode = null;
                     allBottomBalls.Remove(item);
-                    Destroy(item.gameObject);
+                    item.CallOutOfScreenDestroy();
                 }
             }
             else

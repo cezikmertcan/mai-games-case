@@ -67,6 +67,18 @@ public class Node : MonoBehaviour
             C.gameManager.balls.Add(ball);
             goBall.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
         }
+        else if (type == "T")
+        {
+            GameObject goBall = Instantiate(C.gameManager.prefabBall);
+            goBall.name = "Ball with Barrel";
+            goBall.transform.parent = C.gameManager.trGrid;
+            Ball ball = goBall.GetComponent<Ball>();
+            ball.node = this;
+            ball.hasBarrel = true;
+            C.gameManager.balls.Add(ball);
+            goBall.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+            this.type = "B";
+        }
     }
 
     public Node GetBottomNeighbor()

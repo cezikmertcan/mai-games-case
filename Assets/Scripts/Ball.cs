@@ -17,6 +17,8 @@ public class Ball : MonoBehaviour
     public Material matGreen;
     public Material matBlue;
     public Material matOrange;
+    public GameObject goBarrel;
+    public bool hasBarrel = false;
 
     public bool isClickable = false;
 
@@ -26,6 +28,10 @@ public class Ball : MonoBehaviour
     public void Initialize(string type)
     {
         this.type = type;
+        if (!hasBarrel)
+        {
+            this.goBarrel.SetActive(false);
+        }
 
         if (type == "Red")
         {
@@ -50,13 +56,15 @@ public class Ball : MonoBehaviour
     {
         if (node.BFS().Count == 0)
         {
-            transform.position = new Vector3(transform.position.x, -0.5f, transform.position.z);
+            if (!hasBarrel)
+                transform.position = new Vector3(transform.position.x, -0.75f, transform.position.z);
             isClickable = false;
         }
         else
         {
             transform.position = new Vector3(transform.position.x, 0, transform.position.z);
             isClickable = true;
+            this.goBarrel.SetActive(false);
         }
     }
 
@@ -106,5 +114,23 @@ public class Ball : MonoBehaviour
             yield return new WaitForSeconds(1 / 60f);
         }
         transform.position = targetPosition;
+    }
+
+    public void CallOutOfScreenDestroy()
+    {
+        StartCoroutine(OutOfScreenDestroy());
+    }
+
+    IEnumerator OutOfScreenDestroy()
+    {
+        float f = 0;
+        while (f < 2)
+        {
+            Vector3 direction = (new Vector3(-3, 0, -2)).normalized / 10;
+            transform.Translate(direction);
+            f += 1 / 60f;
+            yield return new WaitForSeconds(1 / 60f);
+        }
+        Destroy(this.gameObject);
     }
 }

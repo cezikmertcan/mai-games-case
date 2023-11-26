@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Portal : MonoBehaviour
@@ -9,6 +10,8 @@ public class Portal : MonoBehaviour
     public Node node;
     [HideInInspector]
     public int ballCount;
+    public TMP_Text BallCountText;
+
 
     public void Initialize(Node node)
     {
@@ -17,7 +20,9 @@ public class Portal : MonoBehaviour
 
     public void Check()
     {
+        BallCountText.text = ballCount.ToString();
         if (ballCount > 0)
+        {
             if (this.node.GetBottomNeighbor().type == "E")
             {
                 GameObject goBall = Instantiate(C.gameManager.prefabBall);
@@ -31,6 +36,7 @@ public class Portal : MonoBehaviour
                 C.gameManager.balls.Add(ball);
                 goBall.transform.position = new Vector3(this.node.GetBottomNeighbor().transform.position.x, 0, this.node.GetBottomNeighbor().transform.position.z);
                 ballCount--;
+                BallCountText.text = ballCount.ToString();
                 if (ballCount == 0)
                 {
                     node.type = "E";
@@ -38,5 +44,6 @@ public class Portal : MonoBehaviour
                     Destroy(this.gameObject);
                 }
             }
+        }
     }
 }
